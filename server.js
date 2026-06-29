@@ -14,19 +14,27 @@ const app = express();
 // Connect to database
 connectDB();
 
-// Dynamic CORS configuration to handle both production and development environments
+// Robust CORS configuration to accurately match origins and trim trailing slashes
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow server-to-server or tool-based requests (like Postman) with no origin
+    // Allow server-to-server or tool-based requests (like Postman/Thunder Client) with no origin
     if (!origin) return callback(null, true);
     
     const isLocalhost = /^http:\/\/localhost(:\d+)?$/.test(origin);
-    const productionOrigin = process.env.CORS_ORIGIN;
+    
+    // Clean up the Render environment variable (remove trailing slashes or extra spaces)
+    const productionOrigin = process.env.CORS_ORIGIN 
+      ? process.env.CORS_ORIGIN.trim().replace(/\/$/, "") 
+      : null;
+      
+    // Clean up incoming browser origin string for absolute matching
+    const cleanOrigin = origin.trim().replace(/\/$/, "");
 
-    // Check if the coming request matches localhost OR your production Render domain
-    if (isLocalhost || origin === productionOrigin) {
+    if (isLocalhost || cleanOrigin === productionOrigin) {
       return callback(null, true);
     } else {
+      // This prints the exact mismatch string directly into your Render deploy logs for inspection
+      console.error(`[CORS Blocked] Browser origin: "${cleanOrigin}" | Allowed env origin: "${productionOrigin}"`);
       return callback(new Error('Not allowed by CORS policy'));
     }
   },
