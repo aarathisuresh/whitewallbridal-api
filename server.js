@@ -14,7 +14,7 @@ const app = express();
 // Connect to database
 connectDB();
 
-// 1. PERMANENT DEVELOPMENT CORS MIDDLEWARE
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
@@ -32,7 +32,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// 2. SECURITY HEADERS
+
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
@@ -40,12 +40,12 @@ app.use(helmet({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Health check
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'API running' });
 });
 
-// Routes
+
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
@@ -55,7 +55,7 @@ app.use((req, res, next) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Fixed Error Handler (Ensuring strict 4-argument signature)
+
 app.use((err, req, res, next) => {
   console.error('Atelier Server Error:', err.message || err);
   
