@@ -1,5 +1,5 @@
 import express from 'express';
-import { protect } from '../middleware/authMiddleware.js'; // Your existing JWT verification middleware
+import { protect } from '../middleware/authMiddleware.js'; 
 import { 
   addProduct, 
   editProduct, 
@@ -23,8 +23,8 @@ const adminOnly = (req, res, next) => {
 router.get('/', getAllProducts);
 
 
-router.post('/', protect, adminOnly, addProduct);         // Add Product
-router.put('/:id', protect, adminOnly, editProduct);      // Edit Product & Stock Management
-router.delete('/:id', protect, adminOnly, deleteProduct);  // Delete Product
+router.post('/', protect, adminOnly, addProduct);        
+router.put('/:id', protect, adminOnly, editProduct);     
+router.delete('/:id', protect, adminOnly, deleteProduct);  
 
 export default router;

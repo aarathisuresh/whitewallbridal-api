@@ -1,4 +1,4 @@
-import Product from '../models/Product.js';
+import Product from '../models/product.js';
 
 
 export const addProduct = async (req, res) => {
@@ -8,7 +8,7 @@ export const addProduct = async (req, res) => {
       images, fabric, care, variants, sizeGuide, isNew, isFeatured 
     } = req.body;
 
-    // Check if any provided variant SKU is already taken
+  
     if (variants && variants.length > 0) {
       const skus = variants.map(v => v.sku).filter(Boolean);
       const duplicateSkuProduct = await Product.findOne({ 'variants.sku': { $in: skus } });
@@ -65,7 +65,7 @@ export const deleteProduct = async (req, res) => {
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find()
-      .populate('category', 'name') // Pulls in the linked category name dynamically
+      .populate('category', 'name') 
       .sort({ createdAt: -1 });
 
     res.json({ success: true, count: products.length, data: products });
