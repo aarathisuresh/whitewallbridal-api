@@ -1,4 +1,5 @@
 import Product from '../models/Product.js';
+import Category from '../models/Category.js';
 
 export const addProduct = async (req, res) => {
   try {
@@ -7,9 +8,21 @@ export const addProduct = async (req, res) => {
       images, fabric, care, variants, sizeGuide, isNew, isFeatured
     } = req.body;
 
-    // Guard: category is required and must be a valid ObjectId reference.
+    // Guard: category is required
     if (!category) {
       return res.status(400).json({ message: 'Category is required.' });
+    }
+
+    // Convert category name (string) to ObjectId
+    let categoryId = category;
+    if (typeof category === 'string') {
+      const categoryDoc = await Category.findOne({ name: category });
+      if (!categoryDoc) {
+        return res.status(400).json({ 
+          message: `Category "${category}" not found. Please create it first or use existing category.` 
+        });
+      }
+      categoryId = categoryDoc._id;
     }
 
     if (variants && variants.length > 0) {
@@ -21,8 +34,18 @@ export const addProduct = async (req, res) => {
     }
 
     const product = await Product.create({
-      name, description, price, discountPrice, category,
-      images, fabric, care, variants, sizeGuide, isNew, isFeatured
+      name, 
+      description, 
+      price, 
+      discountPrice, 
+      category: categoryId,  // Use the converted ObjectId
+      images, 
+      fabric, 
+      care, 
+      variants, 
+      sizeGuide, 
+      isNew, 
+      isFeatured
     });
 
     res.status(201).json({ success: true, data: product });
@@ -35,8 +58,20 @@ export const addProduct = async (req, res) => {
 export const editProduct = async (req, res) => {
   try {
     const { id } = req.params;
+    const updateData = { ...req.body };
 
-    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+    // If category is being updated as a string, convert to ObjectId
+    if (updateData.category && typeof updateData.category === 'string') {
+      const categoryDoc = await Category.findOne({ name: updateData.category });
+      if (!categoryDoc) {
+        return res.status(400).json({ 
+          message: `Category "${updateData.category}" not found.` 
+        });
+      }
+      updateData.category = categoryDoc._id;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     });
@@ -68,8 +103,6 @@ export const deleteProduct = async (req, res) => {
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find()
-      // strictPopulate:false + lean() keeps the query from crashing on a
-      // product whose category ref is broken/missing.
       .populate({ path: 'category', select: 'name', strictPopulate: false })
       .sort({ createdAt: -1 })
       .lean();
