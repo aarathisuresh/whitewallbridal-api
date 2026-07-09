@@ -6,7 +6,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
-import galleryRoutes from './routes/gallery.js';
+import galleryRoutes from './routes/galleryRoutes.js';
 import atelierOrderRoutes from './routes/atelierOrders.js';
 
 dotenv.config();
