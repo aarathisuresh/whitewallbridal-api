@@ -13,7 +13,7 @@ export const addProduct = async (req, res) => {
       return res.status(400).json({ message: 'Category is required.' });
     }
 
-    // Convert category name (string) to ObjectId
+    
     let categoryId = category;
     if (typeof category === 'string') {
       const categoryDoc = await Category.findOne({ name: category });
