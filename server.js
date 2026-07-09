@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
+import galleryRoutes from './routes/gallery.js';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Fixed 404 Handler (Explicitly defining next to preserve middleware alignment)
 app.use((req, res, next) => {
