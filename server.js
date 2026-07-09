@@ -6,7 +6,8 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
-import galleryRoutes from './routes/galleryRoutes.js';
+import galleryRoutes from './routes/gallery.js';
+import atelierOrderRoutes from './routes/atelierOrders.js';
 
 dotenv.config();
 
@@ -40,7 +41,7 @@ app.use(cors({
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -59,6 +60,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/atelier-orders', atelierOrderRoutes);
 
 // Fixed 404 Handler (Explicitly defining next to preserve middleware alignment)
 app.use((req, res, next) => {
@@ -83,12 +85,12 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`
+  console.log(\`
  🎉 White Wall Bridal Boutique API                        
- Server running on port ${PORT}                            
- Environment: ${process.env.NODE_ENV || 'development'}                                          
- API: http://localhost:${PORT}/api                          
-  `);
+ Server running on port \${PORT}                            
+ Environment: \${process.env.NODE_ENV || 'development'}                                          
+ API: http://localhost:\${PORT}/api                          
+  \`);
 });
 
 export default app;
